@@ -9,7 +9,7 @@
     "author": "Gulfaraz Rahman",
     "license": "MIT",
     "dependencies": {
-        "@notionhq/client": "^0.1.8",
+        "@notionhq/client": "^0.1.9",
         "@types/node": "^15.6.1",
         "require-context": "^1.1.0",
         "ts-node": "^10.0.0",

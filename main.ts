@@ -2,9 +2,12 @@ import { generate } from "./npcData/generate";
 import { Client } from "@notionhq/client";
 import {
     Block,
+    CheckboxPropertyValue,
     HeadingThreeBlock,
-    InputPropertyValue,
     ParagraphBlock,
+    RelationInputPropertyValue,
+    RichTextInput,
+    TitleInputPropertyValue,
 } from "@notionhq/client/build/src/api-types";
 import { Npc } from "./npcData";
 import { InputPropertyValueMap } from "@notionhq/client/build/src/api-endpoints";
@@ -13,6 +16,40 @@ const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 const DATABASE_ID = process.env.DATABASE_ID || "";
 const GENERATE_MINIMUM = 1;
 const GENERATE_MAXIMUM = 10;
+const RACE_DATABASE: { [key: string]: string | undefined } = {
+    aasimar: process.env.AASIMAR,
+    dragonborn: process.env.DRAGONBORN,
+    dwarf: process.env.DWARF,
+    "mountain dwarf": process.env.MOUNTAIN_DWARF,
+    "hill dwarf": process.env.HILL_DWARF,
+    elf: process.env.ELF,
+    drow: process.env.DROW,
+    "high elf": process.env.HIGH_ELF,
+    "wood elf": process.env.WOOD_ELF,
+    firbolg: process.env.FIRBOLG,
+    gnome: process.env.GNOME,
+    "forest gnome": process.env.FOREST_GNOME,
+    "rock gnome": process.env.ROCK_GNOME,
+    giant: process.env.GIANT,
+    goblin: process.env.GOBLIN,
+    goblinoid: process.env.GOBLINOID,
+    goliath: process.env.GOLIATH,
+    halfling: process.env.HALFLING,
+    "lightfoot halfling": process.env.LIGHTFOOT_HALFLING,
+    "stout halfling": process.env.STOUT_HALFLING,
+    "half-elf": process.env.HALF_ELF,
+    "half-orc": process.env.HALF_ORC,
+    human: process.env.HUMAN,
+    kenku: process.env.KENKU,
+    lizardfolk: process.env.LIZARDFOLK,
+    medusa: process.env.MEDUSA,
+    ogre: process.env.OGRE,
+    orc: process.env.ORC,
+    tabaxi: process.env.TABAXI,
+    tiefling: process.env.TIEFLING,
+    triton: process.env.TRITON,
+    troglodyte: process.env.TROGLODYTE,
+};
 
 const generateNpc = (): Npc => {
     const npc = generate().npc;
@@ -114,16 +151,22 @@ const getNpcPageProperties = (npc: Npc): InputPropertyValueMap => {
         Name: {
             title: [
                 {
-                    type: "text",
                     text: {
                         content: npc.description.name,
                     },
-                },
+                } as RichTextInput,
             ],
-        } as InputPropertyValue,
+        } as TitleInputPropertyValue,
         Generated: {
             checkbox: true,
-        } as InputPropertyValue,
+        } as CheckboxPropertyValue,
+        Race: {
+            relation: [
+                {
+                    id: RACE_DATABASE[npc.description.race],
+                },
+            ],
+        } as RelationInputPropertyValue,
     };
 };
 
